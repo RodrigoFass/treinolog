@@ -1,0 +1,26 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Banco local (SQLite) e pasta instance do Flask
+backend/instance/
+*.db
+
+# Variaveis de ambiente (nunca versionar)
+.env
+.env.*
+!.env.example
+
+# Frontend
+node_modules/
+dist/
+
+# Editores
+.vscode/
+.idea/

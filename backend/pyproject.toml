@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=70.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "treinolog"
+version = "0.1.0"
+description = "Fichas de treino prescritas pelo personal e registro de cargas pelo aluno, com Flask (API) e Vue 3."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    {name = "Rodrigo Fassarella Leite"},
+    {name = "Pedro Henrique Meneghelli"},
+]
+dependencies = [
+    "Flask>=3.0",
+    "Flask-SQLAlchemy>=3.1",
+    "Flask-Migrate>=4.0",
+    "Flask-JWT-Extended>=4.6",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+mysql = [
+    "PyMySQL>=1.1",
+]
+dev = [
+    "ipython",
+    "black",
+    "flake8",
+    "invoke",
+]
+test = [
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "pytest-flask",
+]
+
+[tool.setuptools.packages.find]
+include = ["treinolog*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
