@@ -1,195 +1,71 @@
+/* O visual base vem do Bulma (importado no main.js).
+   Aqui ficam so os ajustes que o Bulma nao tem pronto. */
+
 /* RNF01: interface pensada primeiro para o celular */
-:root {
-  --primary: #1f6feb;
-  --primary-dark: #1554c0;
-  --danger: #d1242f;
-  --bg: #f4f6f9;
-  --card: #ffffff;
-  --text: #1f2328;
-  --muted: #656d76;
-  --border: #d0d7de;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  color: var(--text);
-  background: var(--bg);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
 .container {
   max-width: 720px;
-  margin: 0 auto;
-  padding: 16px;
+  padding: 1rem;
 }
 
-.topbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--primary);
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
-.topbar a,
-.topbar .link {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.topbar nav {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.topbar .router-link-active {
-  text-decoration: underline;
-}
-
-.brand {
-  font-size: 1.2rem;
-  font-weight: 700 !important;
-}
-
-h1 {
-  font-size: 1.4rem;
-  margin: 8px 0 16px;
-}
-
-h2 {
-  font-size: 1.1rem;
-  margin: 20px 0 10px;
-}
-
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 12px;
+label .input,
+label .textarea,
+label .select {
+  margin-top: 0.25rem;
+  font-weight: normal;
 }
 
 .row {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .muted {
-  color: var(--muted);
+  color: #7a7a7a;
   font-size: 0.9rem;
 }
 
-label {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
+.navbar .router-link-active {
+  text-decoration: underline;
 }
 
-input,
-select,
-textarea {
-  width: 100%;
-  font-size: 1rem;
-  padding: 10px;
-  margin-top: 4px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #fff;
-}
-
-button {
-  font-family: inherit;
-  font-size: 1rem;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
-  cursor: pointer;
-}
-
-button:hover {
-  background: var(--primary-dark);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-button.secondary {
-  background: #e7ecf2;
-  color: var(--text);
-}
-
-button.danger {
-  background: var(--danger);
-}
-
-button.link {
-  background: none;
-  padding: 0;
-}
-
-.full {
-  width: 100%;
-}
-
-.error {
-  color: var(--danger);
-  margin: 8px 0;
-}
-
-.success {
-  color: #1a7f37;
-  margin: 8px 0;
-}
-
-.badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #e7ecf2;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-}
-
+/* Linha de registro de serie: Serie | Carga | Reps | OK */
 .set-row {
   display: grid;
   grid-template-columns: 40px 1fr 1fr 64px;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
-.set-row input {
-  margin-top: 0;
+.set-row.saved .input {
+  border-color: #48c78e;
 }
 
-.set-row button {
-  padding: 10px 0;
+/* Celular pequeno: diminui as colunas fixas da serie */
+@media (max-width: 400px) {
+  .set-row {
+    grid-template-columns: 28px 1fr 1fr 48px;
+    gap: 0.35rem;
+  }
+
+  .row .button {
+    flex: 1;
+  }
 }
 
-.set-row.saved input {
-  border-color: #1a7f37;
-}
-
-a {
-  color: var(--primary);
+/* Telas maiores: um pouco mais de respiro */
+@media (min-width: 769px) {
+  .container {
+    padding: 2rem 1rem;
+  }
 }

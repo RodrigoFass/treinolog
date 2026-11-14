@@ -73,7 +73,7 @@ onBeforeUnmount(() => chart?.destroy())
 </script>
 
 <template>
-  <p v-if="error" class="error">{{ error }}</p>
+  <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
   <p v-else-if="!exercises.length" class="muted">
     Registre alguns treinos para ver a evolução das cargas.
   </p>
@@ -81,13 +81,15 @@ onBeforeUnmount(() => chart?.destroy())
   <template v-else>
     <label>
       Exercício
-      <select v-model="exerciseId">
-        <option v-for="exercise in exercises" :key="exercise.id" :value="exercise.id">
-          {{ exercise.name }}
-        </option>
-      </select>
+      <div class="select is-fullwidth">
+        <select v-model="exerciseId">
+          <option v-for="exercise in exercises" :key="exercise.id" :value="exercise.id">
+            {{ exercise.name }}
+          </option>
+        </select>
+      </div>
     </label>
-    <div class="card">
+    <div class="box">
       <canvas ref="canvas"></canvas>
     </div>
   </template>

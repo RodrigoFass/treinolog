@@ -53,28 +53,28 @@ async function start(workout) {
 </script>
 
 <template>
-  <h1>Olá, {{ auth.user.name }}</h1>
-  <p v-if="error" class="error">{{ error }}</p>
+  <h1 class="title is-4">Olá, {{ auth.user.name }}</h1>
+  <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
 
-  <form v-if="!auth.user.personal_id" class="card" @submit.prevent="link">
+  <form v-if="!auth.user.personal_id" class="box" @submit.prevent="link">
     <p>Peça ao seu personal o código de convite para receber suas fichas.</p>
     <label>
       Código de convite
-      <input v-model="inviteCode" maxlength="8" required style="text-transform: uppercase" />
+      <input class="input" v-model="inviteCode" maxlength="8" required style="text-transform: uppercase" />
     </label>
-    <button class="full">Vincular</button>
+    <button class="button is-primary is-fullwidth">Vincular</button>
   </form>
 
   <template v-else>
     <p class="muted">Personal: {{ auth.user.personal_name }}</p>
-    <h2>Suas fichas</h2>
+    <h2 class="title is-5">Suas fichas</h2>
     <p v-if="!workouts.length" class="muted">Seu personal ainda não montou nenhuma ficha.</p>
 
     <!-- RF05: fichas ativas -->
-    <div v-for="workout in workouts" :key="workout.id" class="card">
+    <div v-for="workout in workouts" :key="workout.id" class="box">
       <div class="row">
         <strong>{{ workout.name }}</strong>
-        <button :disabled="starting === workout.id" @click="start(workout)">Iniciar treino</button>
+        <button class="button is-primary" :disabled="starting === workout.id" @click="start(workout)">Iniciar treino</button>
       </div>
       <p v-if="workout.notes" class="muted">{{ workout.notes }}</p>
       <ol style="padding-left: 20px; margin-bottom: 0">
