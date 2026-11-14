@@ -41,40 +41,38 @@ async function toggleActive(workout) {
 </script>
 
 <template>
-  <p v-if="error" class="error">{{ error }}</p>
+  <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
 
   <template v-if="student">
-    <h1>{{ student.name }}</h1>
+    <h1 class="title is-4">{{ student.name }}</h1>
 
-    <div class="row" style="margin-bottom: 12px; justify-content: flex-start">
-      <button :class="{ secondary: tab !== 'fichas' }" @click="tab = 'fichas'">Fichas</button>
-      <button :class="{ secondary: tab !== 'historico' }" @click="tab = 'historico'">
-        Histórico
-      </button>
-      <button :class="{ secondary: tab !== 'evolucao' }" @click="tab = 'evolucao'">
-        Evolução
-      </button>
+    <div class="tabs is-boxed">
+      <ul>
+        <li :class="{ 'is-active': tab === 'fichas' }"><a @click="tab = 'fichas'">Fichas</a></li>
+        <li :class="{ 'is-active': tab === 'historico' }"><a @click="tab = 'historico'">Histórico</a></li>
+        <li :class="{ 'is-active': tab === 'evolucao' }"><a @click="tab = 'evolucao'">Evolução</a></li>
+      </ul>
     </div>
 
     <template v-if="tab === 'fichas'">
       <RouterLink :to="`/fichas/nova?aluno=${studentId}`">
-        <button class="full" style="margin-bottom: 12px">Nova ficha</button>
+        <button class="button is-primary is-fullwidth" style="margin-bottom: 12px">Nova ficha</button>
       </RouterLink>
       <p v-if="!workouts.length" class="muted">Nenhuma ficha montada para este aluno.</p>
 
-      <div v-for="workout in workouts" :key="workout.id" class="card">
+      <div v-for="workout in workouts" :key="workout.id" class="box">
         <div class="row">
           <div>
             <strong>{{ workout.name }}</strong>
-            <span class="badge" style="margin-left: 6px">
+            <span class="tag is-info is-light" style="margin-left: 6px">
               {{ workout.is_active ? 'Ativa' : 'Inativa' }}
             </span>
           </div>
           <div class="row">
             <RouterLink :to="`/fichas/${workout.id}`">
-              <button class="secondary">Editar</button>
+              <button class="button is-light">Editar</button>
             </RouterLink>
-            <button class="secondary" @click="toggleActive(workout)">
+            <button class="button is-light" @click="toggleActive(workout)">
               {{ workout.is_active ? 'Desativar' : 'Reativar' }}
             </button>
           </div>

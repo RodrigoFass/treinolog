@@ -1,3 +1,5 @@
+import logging
+
 from werkzeug.exceptions import Conflict, NotFound
 
 from treinolog.auth.models import User
@@ -5,6 +7,8 @@ from treinolog.exercises.models import Exercise
 from treinolog.ext.db import db
 from treinolog.utils import optional_str, required_str
 from treinolog.workouts.models import WorkoutExercise
+
+logger = logging.getLogger(__name__)
 
 
 def _ensure_unique_name(personal: User, name: str, exclude_id: int | None = None) -> None:
@@ -45,6 +49,7 @@ def create_exercise(personal: User, data: dict) -> Exercise:
     )
     db.session.add(exercise)
     db.session.commit()
+    logger.info("Exercicio id=%s criado pelo personal id=%s", exercise.id, personal.id)
     return exercise
 
 

@@ -10,8 +10,8 @@ Cliente-servidor em três camadas, a mesma do TaskFlow:
 
 | Camada | Tecnologias |
 |---|---|
-| Frontend (`frontend/`) | Vue 3, Vite, Vue Router, Pinia, Axios, Chart.js |
-| Backend (`backend/`) | Python 3.12, Flask (Application Factory + blueprints), Flask-SQLAlchemy, Flask-Migrate, Flask-JWT-Extended |
+| Frontend (`frontend/`) | Vue 3, Vite, Vue Router, Pinia, Axios, Chart.js, Bulma |
+| Backend (`backend/`) | Python 3.12, Flask (Application Factory + blueprints), Flask-SQLAlchemy, Flask-Migrate, Flask-JWT-Extended, Pydantic |
 | Banco | SQLite em desenvolvimento e testes; MySQL em produção |
 
 ```
@@ -23,8 +23,8 @@ backend/
 ├── treinolog/
 │   ├── __init__.py         # create_app()
 │   ├── config.py           # Development / Testing / Production
-│   ├── utils.py            # validação dos dados de entrada
-│   ├── ext/                # db, jwt, errors, cli
+│   ├── utils.py            # leitura e validação do JSON (validate_json)
+│   ├── ext/                # db, jwt, errors, cli, logs
 │   ├── auth/               # users: cadastro, login, vínculo, painel
 │   ├── exercises/          # exercises: catálogo do personal
 │   ├── workouts/           # workouts + workout_exercises: fichas
@@ -32,7 +32,9 @@ backend/
 └── tests/                  # PyTest + pytest-flask
 ```
 
-Cada módulo de domínio tem `models.py` (tabelas), `services.py` (regras de negócio) e `routes.py` (blueprint da API).
+Cada módulo de domínio tem `models.py` (tabelas), `schemas.py` (validação com Pydantic), `services.py` (regras de negócio) e `routes.py` (blueprint da API).
+
+Os logs saem no console e em `backend/logs/treinolog.log` (configurável por `LOG_LEVEL` e `LOG_DIR` no `.env`).
 
 ## Como rodar
 
@@ -43,7 +45,8 @@ cd backend
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -e ".[dev,test]"
-copy .env.example .env.dev      # ajuste SECRET_KEY e JWT_SECRET_KEY
+copy .env.example .env          # ajuste SECRET_KEY e JWT_SECRET_KEY
+copy .env .env.dev              # o invoke run usa o .env.dev
 flask --app app db upgrade      # cria as tabelas
 flask --app app seed            # opcional: personal e aluno de demonstração
 invoke run                      # API em http://127.0.0.1:5000

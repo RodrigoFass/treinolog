@@ -72,13 +72,13 @@ async function discard() {
 </script>
 
 <template>
-  <p v-if="error" class="error">{{ error }}</p>
+  <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
 
   <template v-if="session && workout">
-    <h1>{{ workout.name }}</h1>
+    <h1 class="title is-4">{{ workout.name }}</h1>
     <p class="muted">{{ formatDateTime(session.performed_at) }}</p>
 
-    <div v-for="item in workout.exercises" :key="item.id" class="card">
+    <div v-for="item in workout.exercises" :key="item.id" class="box">
       <strong>{{ item.exercise_name }}</strong>
       <p class="muted" style="margin: 4px 0 10px">
         Prescrito: {{ item.sets }}x{{ item.reps }}
@@ -86,7 +86,7 @@ async function discard() {
         <span v-if="item.rest_seconds"> · descanso {{ item.rest_seconds }}s</span>
       </p>
 
-      <div class="set-row muted" style="margin-bottom: 4px">
+      <div class="set-row set-header muted">
         <span>Série</span><span>Carga (kg)</span><span>Reps</span><span></span>
       </div>
       <div
@@ -96,7 +96,7 @@ async function discard() {
         :class="{ saved: inputs[key(item.id, n)]?.saved }"
       >
         <span>{{ n }}ª</span>
-        <input
+        <input class="input"
           v-model="inputs[key(item.id, n)].load_kg"
           type="number"
           inputmode="decimal"
@@ -104,14 +104,14 @@ async function discard() {
           step="0.5"
           :disabled="!editable"
         />
-        <input
+        <input class="input"
           v-model="inputs[key(item.id, n)].reps_done"
           type="number"
           inputmode="numeric"
           min="0"
           :disabled="!editable"
         />
-        <button
+        <button class="button is-primary"
           v-if="editable"
           :disabled="inputs[key(item.id, n)].saving"
           @click="saveSet(item, n)"
@@ -122,8 +122,8 @@ async function discard() {
     </div>
 
     <div v-if="editable" class="row">
-      <button class="danger" @click="discard">Excluir treino</button>
-      <button @click="router.push('/historico')">Concluir</button>
+      <button class="button is-danger" @click="discard">Excluir treino</button>
+      <button class="button is-primary" @click="router.push('/historico')">Concluir</button>
     </div>
   </template>
 </template>

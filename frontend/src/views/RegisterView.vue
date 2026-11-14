@@ -27,23 +27,25 @@ async function submit() {
 </script>
 
 <template>
-  <h1>Criar conta</h1>
-  <form class="card" @submit.prevent="submit">
-    <label>Nome <input v-model="form.name" required maxlength="120" /></label>
-    <label>E-mail <input v-model="form.email" type="email" required maxlength="160" /></label>
+  <h1 class="title is-4">Criar conta</h1>
+  <form class="box" @submit.prevent="submit">
+    <label>Nome <input class="input" v-model="form.name" required maxlength="120" /></label>
+    <label>E-mail <input class="input" v-model="form.email" type="email" required maxlength="160" /></label>
     <label>
       Senha (mínimo 6 caracteres)
-      <input v-model="form.password" type="password" minlength="6" required />
+      <input class="input" v-model="form.password" type="password" minlength="6" required />
     </label>
     <label>
       Eu sou
-      <select v-model="form.role">
-        <option value="aluno">Aluno</option>
-        <option value="personal">Personal trainer</option>
-      </select>
+      <div class="select is-fullwidth">
+        <select v-model="form.role">
+          <option value="aluno">Aluno</option>
+          <option value="personal">Personal trainer</option>
+        </select>
+      </div>
     </label>
-    <p v-if="error" class="error">{{ error }}</p>
-    <button class="full" :disabled="loading">Cadastrar</button>
+    <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
+    <button class="button is-primary is-fullwidth" :disabled="loading">Cadastrar</button>
   </form>
   <p class="muted">Já tem conta? <RouterLink to="/login">Entrar</RouterLink></p>
 </template>

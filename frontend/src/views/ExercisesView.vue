@@ -63,43 +63,45 @@ async function remove(exercise) {
 </script>
 
 <template>
-  <h1>Catálogo de exercícios</h1>
+  <h1 class="title is-4">Catálogo de exercícios</h1>
 
-  <form class="card" @submit.prevent="save">
-    <label>Nome <input v-model="form.name" required maxlength="120" /></label>
+  <form class="box" @submit.prevent="save">
+    <label>Nome <input class="input" v-model="form.name" required maxlength="120" /></label>
     <label>
       Grupo muscular
-      <input v-model="form.muscle_group" list="groups" required maxlength="60" />
+      <input class="input" v-model="form.muscle_group" list="groups" required maxlength="60" />
       <datalist id="groups">
         <option v-for="group in groups" :key="group" :value="group" />
       </datalist>
     </label>
-    <label>Descrição <textarea v-model="form.description" rows="2"></textarea></label>
+    <label>Descrição <textarea class="textarea" v-model="form.description" rows="2"></textarea></label>
     <div class="row">
       <button v-if="form.id" type="button" class="secondary" @click="reset">Cancelar</button>
-      <button>{{ form.id ? 'Salvar alterações' : 'Adicionar exercício' }}</button>
+      <button class="button is-primary">{{ form.id ? 'Salvar alterações' : 'Adicionar exercício' }}</button>
     </div>
   </form>
 
-  <p v-if="error" class="error">{{ error }}</p>
+  <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
 
   <label v-if="groups.length">
     Filtrar por grupo
-    <select v-model="filter">
-      <option value="">Todos</option>
-      <option v-for="group in groups" :key="group" :value="group">{{ group }}</option>
-    </select>
+    <div class="select is-fullwidth">
+      <select v-model="filter">
+        <option value="">Todos</option>
+        <option v-for="group in groups" :key="group" :value="group">{{ group }}</option>
+      </select>
+    </div>
   </label>
 
-  <div v-for="exercise in visible" :key="exercise.id" class="card">
+  <div v-for="exercise in visible" :key="exercise.id" class="box">
     <div class="row">
       <div>
         <strong>{{ exercise.name }}</strong>
-        <span class="badge" style="margin-left: 6px">{{ exercise.muscle_group }}</span>
+        <span class="tag is-info is-light" style="margin-left: 6px">{{ exercise.muscle_group }}</span>
       </div>
       <div class="row">
-        <button class="secondary" @click="edit(exercise)">Editar</button>
-        <button class="danger" @click="remove(exercise)">Excluir</button>
+        <button class="button is-light" @click="edit(exercise)">Editar</button>
+        <button class="button is-danger" @click="remove(exercise)">Excluir</button>
       </div>
     </div>
     <p v-if="exercise.description" class="muted">{{ exercise.description }}</p>

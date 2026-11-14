@@ -2,7 +2,13 @@ from flask import Blueprint
 from flask_jwt_extended import current_user, jwt_required
 
 from treinolog.ext.jwt import role_required
-from treinolog.utils import get_json, query_int
+from treinolog.utils import query_int, validate_json
+from treinolog.workouts.schemas import (
+    ItemUpdateSchema,
+    PrescricaoSchema,
+    WorkoutCreateSchema,
+    WorkoutUpdateSchema,
+)
 from treinolog.workouts import services
 
 bp = Blueprint("workouts", __name__)
@@ -21,7 +27,7 @@ def list_workouts():
 @bp.post("")
 @role_required("personal")
 def create_workout():
-    workout = services.create_workout(current_user, get_json())
+    workout = services.create_workout(current_user, validate_json(WorkoutCreateSchema))
     return workout.to_dict(), 201
 
 
@@ -35,7 +41,7 @@ def get_workout(workout_id):
 @role_required("personal")
 def update_workout(workout_id):
     workout = services.get_own_workout(current_user, workout_id)
-    return services.update_workout(workout, get_json()).to_dict()
+    return services.update_workout(workout, validate_json(WorkoutUpdateSchema)).to_dict()
 
 
 @bp.delete("/<int:workout_id>")
@@ -52,7 +58,7 @@ def delete_workout(workout_id):
 @role_required("personal")
 def add_item(workout_id):
     workout = services.get_own_workout(current_user, workout_id)
-    return services.add_item(workout, get_json()).to_dict(), 201
+    return services.add_item(workout, validate_json(PrescricaoSchema)).to_dict(), 201
 
 
 @bp.put("/<int:workout_id>/exercises/<int:item_id>")
@@ -60,7 +66,7 @@ def add_item(workout_id):
 def update_item(workout_id, item_id):
     workout = services.get_own_workout(current_user, workout_id)
     item = services.get_item(workout, item_id)
-    return services.update_item(item, get_json()).to_dict()
+    return services.update_item(item, validate_json(ItemUpdateSchema)).to_dict()
 
 
 @bp.delete("/<int:workout_id>/exercises/<int:item_id>")

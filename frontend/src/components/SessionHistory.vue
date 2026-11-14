@@ -28,7 +28,7 @@ onMounted(async () => {
 
 <template>
   <p v-if="loading" class="muted">Carregando...</p>
-  <p v-else-if="error" class="error">{{ error }}</p>
+  <p v-else-if="error" class="notification is-danger is-light">{{ error }}</p>
   <p v-else-if="!sessions.length" class="muted">Nenhum treino registrado ainda.</p>
 
   <RouterLink
@@ -37,7 +37,7 @@ onMounted(async () => {
     :to="`/sessoes/${session.id}`"
     style="text-decoration: none; color: inherit"
   >
-    <div class="card row">
+    <div class="box row">
       <strong>{{ session.workout_name }}</strong>
       <span class="muted">{{ formatDateTime(session.performed_at) }}</span>
     </div>
