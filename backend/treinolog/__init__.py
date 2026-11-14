@@ -3,7 +3,7 @@ import os
 from flask import Flask
 
 from .config import config
-from .ext import cli, db, errors, jwt
+from .ext import cli, db, errors, jwt, logs
 
 
 # ==========================================================
@@ -15,11 +15,12 @@ def create_app(config_name=None):
     config_name = config_name or os.getenv("FLASK_CONFIG", "development")
     app.config.from_object(config.get(config_name, config["default"]))
 
+    # ----------------------------------------------------------
+    # Extensoes (logging primeiro, para registrar o resto)
+    # ----------------------------------------------------------
+    logs.init_app(app)
     app.logger.info(f"Aplicacao criada com config_name = {config_name}")
 
-    # ----------------------------------------------------------
-    # Extensoes
-    # ----------------------------------------------------------
     db.init_app(app)
     db.register_models()
     jwt.init_app(app)

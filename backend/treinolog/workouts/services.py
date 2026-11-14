@@ -1,3 +1,5 @@
+import logging
+
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound
 
 from treinolog.auth.models import User
@@ -6,6 +8,8 @@ from treinolog.ext.db import db
 from treinolog.sessions.models import SetLog, WorkoutSession
 from treinolog.utils import optional_str, required_str, to_float, to_int
 from treinolog.workouts.models import Workout, WorkoutExercise
+
+logger = logging.getLogger(__name__)
 
 
 # ==========================================================
@@ -68,6 +72,10 @@ def create_workout(personal: User, data: dict) -> Workout:
 
     db.session.add(workout)
     db.session.commit()
+    logger.info(
+        "Ficha id=%s criada pelo personal id=%s para o aluno id=%s",
+        workout.id, personal.id, student.id,
+    )
     return workout
 
 
@@ -92,6 +100,7 @@ def delete_workout(workout: Workout) -> None:
 
     db.session.delete(workout)
     db.session.commit()
+    logger.info("Ficha id=%s excluida", workout.id)
 
 
 def add_item(workout: Workout, data: dict) -> WorkoutExercise:
