@@ -3,7 +3,8 @@ from flask_jwt_extended import current_user
 
 from treinolog.exercises import services
 from treinolog.ext.jwt import role_required
-from treinolog.utils import get_json
+from treinolog.exercises.schemas import ExerciseCreateSchema, ExerciseUpdateSchema
+from treinolog.utils import validate_json
 
 bp = Blueprint("exercises", __name__)
 
@@ -18,7 +19,7 @@ def list_exercises():
 @bp.post("")
 @role_required("personal")
 def create_exercise():
-    exercise = services.create_exercise(current_user, get_json())
+    exercise = services.create_exercise(current_user, validate_json(ExerciseCreateSchema))
     return exercise.to_dict(), 201
 
 
@@ -32,7 +33,7 @@ def get_exercise(exercise_id):
 @role_required("personal")
 def update_exercise(exercise_id):
     exercise = services.get_exercise(current_user, exercise_id)
-    return services.update_exercise(exercise, get_json()).to_dict()
+    return services.update_exercise(exercise, validate_json(ExerciseUpdateSchema)).to_dict()
 
 
 @bp.delete("/<int:exercise_id>")
