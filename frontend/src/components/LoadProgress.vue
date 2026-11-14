@@ -55,8 +55,8 @@ function draw() {
         {
           label: 'Carga máxima (kg)',
           data: points.value.map((p) => p.max_load_kg),
-          borderColor: '#1f6feb',
-          backgroundColor: '#1f6feb',
+          borderColor: '#00d1b2',
+          backgroundColor: '#00d1b2',
           tension: 0.2,
         },
       ],

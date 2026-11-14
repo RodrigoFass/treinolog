@@ -151,7 +151,7 @@ async function remove() {
   <div v-for="(item, index) in items" :key="item.id ?? index" class="box">
     <div class="row">
       <strong>{{ index + 1 }}. {{ item.exercise_name }}</strong>
-      <button class="button is-danger" type="button" @click="removeItem(index)">Remover</button>
+      <button class="button is-danger is-small" type="button" @click="removeItem(index)">Remover</button>
     </div>
     <div class="columns is-mobile">
       <label class="column">Séries <input class="input" v-model.number="item.sets" type="number" min="1" max="20" /></label>

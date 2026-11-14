@@ -86,7 +86,7 @@ async function discard() {
         <span v-if="item.rest_seconds"> · descanso {{ item.rest_seconds }}s</span>
       </p>
 
-      <div class="set-row muted" style="margin-bottom: 4px">
+      <div class="set-row set-header muted">
         <span>Série</span><span>Carga (kg)</span><span>Reps</span><span></span>
       </div>
       <div

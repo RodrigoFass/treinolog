@@ -34,8 +34,13 @@ label .select {
   font-size: 0.9rem;
 }
 
-.navbar .router-link-active {
+/* Destaca a pagina atual no menu (menos o nome do app) */
+.navbar-menu .router-link-active {
   text-decoration: underline;
+}
+
+.navbar-burger {
+  color: inherit;
 }
 
 /* Linha de registro de serie: Serie | Carga | Reps | OK */
@@ -47,6 +52,11 @@ label .select {
   margin-bottom: 0.5rem;
 }
 
+.set-header {
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
 .set-row.saved .input {
   border-color: #48c78e;
 }
@@ -56,10 +66,6 @@ label .select {
   .set-row {
     grid-template-columns: 28px 1fr 1fr 48px;
     gap: 0.35rem;
-  }
-
-  .row .button {
-    flex: 1;
   }
 }
 
