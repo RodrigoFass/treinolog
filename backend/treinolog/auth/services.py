@@ -1,3 +1,4 @@
+import logging
 import re
 import secrets
 import string
@@ -7,6 +8,8 @@ from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 from treinolog.auth.models import ROLES, User
 from treinolog.ext.db import db
 from treinolog.sessions.models import WorkoutSession
+
+logger = logging.getLogger(__name__)
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 INVITE_ALPHABET = string.ascii_uppercase + string.digits
@@ -40,13 +43,16 @@ def register_user(name: str, email: str, password: str, role: str) -> User:
 
     db.session.add(user)
     db.session.commit()
+    logger.info("Novo usuario cadastrado: id=%s perfil=%s", user.id, user.role)
     return user
 
 
 def authenticate(email: str, password: str) -> User:
     user = db.session.scalar(db.select(User).filter_by(email=email.strip().lower()))
     if user is None or not user.check_password(password):
+        logger.warning("Tentativa de login falhou para o e-mail %s", email)
         raise Unauthorized("E-mail ou senha incorretos")
+    logger.info("Login realizado: usuario id=%s", user.id)
     return user
 
 
@@ -62,6 +68,7 @@ def link_student(student: User, invite_code: str) -> User:
 
     student.personal_id = personal.id
     db.session.commit()
+    logger.info("Aluno id=%s vinculado ao personal id=%s", student.id, personal.id)
     return personal
 
 

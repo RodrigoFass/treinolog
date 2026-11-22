@@ -4,7 +4,8 @@ from werkzeug.exceptions import BadRequest
 
 from treinolog.ext.jwt import role_required
 from treinolog.sessions import services
-from treinolog.utils import get_json, query_int
+from treinolog.sessions.schemas import SerieSchema, SessionCreateSchema, SessionUpdateSchema
+from treinolog.utils import query_int, validate_json
 
 bp = Blueprint("sessions", __name__)
 
@@ -22,7 +23,7 @@ def list_sessions():
 @bp.post("")
 @role_required("aluno")
 def start_session():
-    session = services.start_session(current_user, get_json())
+    session = services.start_session(current_user, validate_json(SessionCreateSchema))
     return session.to_dict(), 201
 
 
@@ -36,7 +37,7 @@ def get_session(session_id):
 @role_required("aluno")
 def update_session(session_id):
     session = services.get_own_session(current_user, session_id)
-    return services.update_session(session, get_json()).to_dict()
+    return services.update_session(session, validate_json(SessionUpdateSchema)).to_dict()
 
 
 @bp.delete("/<int:session_id>")
@@ -50,7 +51,7 @@ def delete_session(session_id):
 @role_required("aluno")
 def log_set(session_id):
     session = services.get_own_session(current_user, session_id)
-    return services.log_set(session, get_json()).to_dict()
+    return services.log_set(session, validate_json(SerieSchema)).to_dict()
 
 
 # ==========================================================

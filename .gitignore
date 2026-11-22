@@ -10,6 +10,10 @@ htmlcov/
 
 # Banco local (SQLite) e pasta instance do Flask
 backend/instance/
+
+# Arquivos de log
+backend/logs/
+*.log
 *.db
 
 # Variaveis de ambiente (nunca versionar)

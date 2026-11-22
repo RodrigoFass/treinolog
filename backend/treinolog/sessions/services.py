@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from werkzeug.exceptions import BadRequest, NotFound
@@ -9,6 +10,8 @@ from treinolog.sessions.models import SetLog, WorkoutSession
 from treinolog.utils import optional_str, to_datetime, to_float, to_int
 from treinolog.workouts.models import Workout, WorkoutExercise
 from treinolog.workouts.services import get_student
+
+logger = logging.getLogger(__name__)
 
 
 def _resolve_student(user: User, student_id: int | None) -> User:
@@ -43,6 +46,7 @@ def start_session(student: User, data: dict) -> WorkoutSession:
         _upsert_set(session, set_data)
 
     db.session.commit()
+    logger.info("Aluno id=%s iniciou a sessao id=%s", student.id, session.id)
     return session
 
 

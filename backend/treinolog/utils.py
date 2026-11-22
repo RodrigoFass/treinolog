@@ -12,6 +12,17 @@ def get_json() -> dict:
     return data
 
 
+def validate_json(schema) -> dict:
+    """
+    Valida o corpo JSON com um schema do Pydantic.
+    Se algum campo estiver errado, o Pydantic levanta ValidationError
+    e o handler em ext/errors responde 400 com a mensagem.
+    Retorna so os campos enviados (importante para as edicoes parciais).
+    """
+    dados = schema.model_validate(get_json())
+    return dados.model_dump(mode="json", exclude_unset=True)
+
+
 def required_str(data: dict, field: str, max_len: int) -> str:
     value = data.get(field)
     if not isinstance(value, str) or not value.strip():

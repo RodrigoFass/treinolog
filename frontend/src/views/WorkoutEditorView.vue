@@ -134,58 +134,60 @@ async function remove() {
 </script>
 
 <template>
-  <h1>{{ isNew ? 'Nova ficha' : 'Editar ficha' }}</h1>
+  <h1 class="title is-4">{{ isNew ? 'Nova ficha' : 'Editar ficha' }}</h1>
 
-  <form class="card" @submit.prevent="save">
-    <label>Nome da ficha <input v-model="form.name" placeholder="Treino A" maxlength="60" required /></label>
-    <label>Observações <textarea v-model="form.notes" rows="2"></textarea></label>
-    <button class="full">{{ isNew ? 'Salvar ficha' : 'Salvar nome e observações' }}</button>
+  <form class="box" @submit.prevent="save">
+    <label>Nome da ficha <input class="input" v-model="form.name" placeholder="Treino A" maxlength="60" required /></label>
+    <label>Observações <textarea class="textarea" v-model="form.notes" rows="2"></textarea></label>
+    <button class="button is-primary is-fullwidth">{{ isNew ? 'Salvar ficha' : 'Salvar nome e observações' }}</button>
   </form>
 
-  <p v-if="error" class="error">{{ error }}</p>
-  <p v-if="message" class="success">{{ message }}</p>
+  <p v-if="error" class="notification is-danger is-light">{{ error }}</p>
+  <p v-if="message" class="notification is-success is-light">{{ message }}</p>
 
-  <h2>Exercícios</h2>
+  <h2 class="title is-5">Exercícios</h2>
   <p v-if="!items.length" class="muted">Adicione exercícios do seu catálogo abaixo.</p>
 
-  <div v-for="(item, index) in items" :key="item.id ?? index" class="card">
+  <div v-for="(item, index) in items" :key="item.id ?? index" class="box">
     <div class="row">
       <strong>{{ index + 1 }}. {{ item.exercise_name }}</strong>
-      <button class="danger" type="button" @click="removeItem(index)">Remover</button>
+      <button class="button is-danger is-small" type="button" @click="removeItem(index)">Remover</button>
     </div>
-    <div class="grid-3">
-      <label>Séries <input v-model.number="item.sets" type="number" min="1" max="20" /></label>
-      <label>Reps <input v-model="item.reps" maxlength="10" /></label>
-      <label>Carga (kg) <input v-model.number="item.suggested_load_kg" type="number" min="0" step="0.5" /></label>
+    <div class="columns is-mobile">
+      <label class="column">Séries <input class="input" v-model.number="item.sets" type="number" min="1" max="20" /></label>
+      <label class="column">Reps <input class="input" v-model="item.reps" maxlength="10" /></label>
+      <label class="column">Carga (kg) <input class="input" v-model.number="item.suggested_load_kg" type="number" min="0" step="0.5" /></label>
     </div>
-    <label>Descanso (s) <input v-model.number="item.rest_seconds" type="number" min="0" /></label>
-    <button v-if="!isNew" class="secondary full" type="button" @click="updateItem(item)">
+    <label>Descanso (s) <input class="input" v-model.number="item.rest_seconds" type="number" min="0" /></label>
+    <button v-if="!isNew" class="button is-light is-fullwidth" type="button" @click="updateItem(item)">
       Salvar exercício
     </button>
   </div>
 
-  <div class="card">
+  <div class="box">
     <strong>Adicionar exercício</strong>
     <label>
       Exercício
-      <select v-model="newItem.exercise_id">
-        <option :value="null" disabled>Escolha...</option>
-        <option v-for="exercise in catalog" :key="exercise.id" :value="exercise.id">
-          {{ exercise.name }} ({{ exercise.muscle_group }})
-        </option>
-      </select>
+      <div class="select is-fullwidth">
+        <select v-model="newItem.exercise_id">
+          <option :value="null" disabled>Escolha...</option>
+          <option v-for="exercise in catalog" :key="exercise.id" :value="exercise.id">
+            {{ exercise.name }} ({{ exercise.muscle_group }})
+          </option>
+        </select>
+      </div>
     </label>
-    <div class="grid-3">
-      <label>Séries <input v-model.number="newItem.sets" type="number" min="1" max="20" /></label>
-      <label>Reps <input v-model="newItem.reps" maxlength="10" /></label>
-      <label>Carga (kg) <input v-model.number="newItem.suggested_load_kg" type="number" min="0" step="0.5" /></label>
+    <div class="columns is-mobile">
+      <label class="column">Séries <input class="input" v-model.number="newItem.sets" type="number" min="1" max="20" /></label>
+      <label class="column">Reps <input class="input" v-model="newItem.reps" maxlength="10" /></label>
+      <label class="column">Carga (kg) <input class="input" v-model.number="newItem.suggested_load_kg" type="number" min="0" step="0.5" /></label>
     </div>
-    <label>Descanso (s) <input v-model.number="newItem.rest_seconds" type="number" min="0" /></label>
-    <button class="full" type="button" @click="addItem">Adicionar</button>
+    <label>Descanso (s) <input class="input" v-model.number="newItem.rest_seconds" type="number" min="0" /></label>
+    <button class="button is-primary is-fullwidth" type="button" @click="addItem">Adicionar</button>
     <p v-if="loaded && !catalog.length" class="muted">
       Seu catálogo está vazio. <RouterLink to="/exercicios">Cadastre exercícios</RouterLink>.
     </p>
   </div>
 
-  <button v-if="!isNew" class="danger full" @click="remove">Excluir ficha</button>
+  <button v-if="!isNew" class="button is-danger is-fullwidth" @click="remove">Excluir ficha</button>
 </template>
