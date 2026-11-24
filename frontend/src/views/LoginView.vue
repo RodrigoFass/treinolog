@@ -1,4 +1,5 @@
 <script setup>
+import AppLogo from '../components/AppLogo.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -28,7 +29,11 @@ async function submit() {
 </script>
 
 <template>
-  <h1 class="title is-4">Entrar no TreinoLog</h1>
+  <div class="auth-hero">
+    <AppLogo :size="56" />
+    <p class="muted">Treino, alimentação e ofensiva num lugar só.</p>
+  </div>
+  <h1 class="title is-4">Entrar</h1>
   <form class="box" @submit.prevent="submit">
     <label>E-mail <input class="input" v-model="email" type="email" autocomplete="email" required /></label>
     <label>

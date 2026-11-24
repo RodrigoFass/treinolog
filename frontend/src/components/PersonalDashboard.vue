@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 
 import http, { errorMessage } from '../api/http'
 import { useAuthStore } from '../stores/auth'
+import AppIcon from './AppIcon.vue'
 import { daysSince, formatDate } from '../utils/format'
 
 // RF09: painel do personal com alunos e data do ultimo treino
@@ -33,14 +34,12 @@ function lastWorkoutLabel(iso) {
 <template>
   <h1 class="title is-4">Olá, {{ auth.user.name }}</h1>
 
-  <div class="box">
+  <div class="neon-card" style="--accent: var(--foco)">
     <p class="muted">Código de convite para seus alunos</p>
-    <p style="font-size: 1.6rem; font-weight: 700; letter-spacing: 3px; margin: 4px 0">
-      {{ auth.user.invite_code }}
-    </p>
+    <p class="code-box">{{ auth.user.invite_code }}</p>
   </div>
 
-  <h2 class="title is-5">Seus alunos</h2>
+  <p class="section-title">Seus alunos</p>
   <p v-if="loading" class="muted">Carregando...</p>
   <p v-else-if="error" class="notification is-danger is-light">{{ error }}</p>
   <p v-else-if="!students.length" class="muted">
@@ -51,11 +50,12 @@ function lastWorkoutLabel(iso) {
     v-for="student in students"
     :key="student.id"
     :to="`/alunos/${student.id}`"
-    style="text-decoration: none; color: inherit"
+    class="list-card"
   >
-    <div class="box">
+    <span class="avatar" style="--accent: var(--treino)"><AppIcon name="dumbbell" /></span>
+    <div>
       <strong>{{ student.name }}</strong>
-      <p class="muted" style="margin: 4px 0 0">{{ lastWorkoutLabel(student.last_workout_at) }}</p>
+      <p class="muted">{{ lastWorkoutLabel(student.last_workout_at) }}</p>
     </div>
   </RouterLink>
 </template>

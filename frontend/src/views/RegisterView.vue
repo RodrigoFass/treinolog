@@ -1,4 +1,5 @@
 <script setup>
+import AppLogo from '../components/AppLogo.vue'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -27,6 +28,9 @@ async function submit() {
 </script>
 
 <template>
+  <div class="auth-hero">
+    <AppLogo :size="56" />
+  </div>
   <h1 class="title is-4">Criar conta</h1>
   <form class="box" @submit.prevent="submit">
     <label>Nome <input class="input" v-model="form.name" required maxlength="120" /></label>
@@ -41,6 +45,7 @@ async function submit() {
         <select v-model="form.role">
           <option value="aluno">Aluno</option>
           <option value="personal">Personal trainer</option>
+          <option value="nutricionista">Nutricionista</option>
         </select>
       </div>
     </label>
