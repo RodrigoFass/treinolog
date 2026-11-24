@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import http, { errorMessage } from '../api/http'
 import LoadProgress from '../components/LoadProgress.vue'
 import SessionHistory from '../components/SessionHistory.vue'
+import StreakPanel from '../components/StreakPanel.vue'
 
 const route = useRoute()
 const studentId = Number(route.params.id)
@@ -51,6 +52,7 @@ async function toggleActive(workout) {
         <li :class="{ 'is-active': tab === 'fichas' }"><a @click="tab = 'fichas'">Fichas</a></li>
         <li :class="{ 'is-active': tab === 'historico' }"><a @click="tab = 'historico'">Histórico</a></li>
         <li :class="{ 'is-active': tab === 'evolucao' }"><a @click="tab = 'evolucao'">Evolução</a></li>
+        <li :class="{ 'is-active': tab === 'ofensiva' }"><a @click="tab = 'ofensiva'">Ofensiva</a></li>
       </ul>
     </div>
 
@@ -86,6 +88,7 @@ async function toggleActive(workout) {
     </template>
 
     <SessionHistory v-else-if="tab === 'historico'" :student-id="studentId" />
-    <LoadProgress v-else :student-id="studentId" />
+    <LoadProgress v-else-if="tab === 'evolucao'" :student-id="studentId" />
+    <StreakPanel v-else :student-id="studentId" />
   </template>
 </template>

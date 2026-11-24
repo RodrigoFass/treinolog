@@ -1,9 +1,81 @@
-/* O visual base vem do Bulma (importado no main.js).
-   Aqui ficam so os ajustes que o Bulma nao tem pronto. */
+/* Identidade visual do TreinoLog.
+   O Bulma (main.js) da a base: formularios, botoes, navbar, abas e o tema escuro nativo.
+   Aqui ficam a paleta, os dois temas (claro e escuro) e os componentes proprios. */
+
+/* ===================== PALETA ===================== */
+:root,
+[data-theme='light'] {
+  --bg: #f6f5fb;
+  --surface: #ffffff;
+  --surface-2: #f0eef7;
+  --border: #e4e1ee;
+  --text: #16141f;
+  --muted: #6b6880;
+
+  --treino: #db2777;      /* rosa: treino e cargas */
+  --dieta: #0d9488;       /* turquesa: alimentacao */
+  --ofensiva: #ea580c;    /* laranja: ofensiva (dias seguidos) */
+  --foco: #7c3aed;        /* violeta: cor principal da marca */
+  --ok: #16a34a;
+  --glow: 0 0 0;
+
+  /* cor principal do Bulma = violeta da marca */
+  --bulma-primary-h: 262deg;
+  --bulma-primary-s: 83%;
+  --bulma-primary-l: 58%;
+  --bulma-link-h: 262deg;
+  --bulma-link-s: 83%;
+  --bulma-link-l: 58%;
+  --bulma-body-background-color: var(--bg);
+  --bulma-scheme-main: var(--surface);
+  --bulma-text: var(--text);
+  --bulma-text-strong: var(--text);
+  --bulma-border: var(--border);
+  --bulma-family-primary: 'Inter', system-ui, sans-serif;
+}
+
+[data-theme='dark'] {
+  --bg: #0b0b12;
+  --surface: #14141f;
+  --surface-2: #1d1d2b;
+  --border: #2b2b3d;
+  --text: #ececf4;
+  --muted: #9a9ab0;
+
+  --treino: #f472b6;
+  --dieta: #2dd4bf;
+  --ofensiva: #fb923c;
+  --foco: #a78bfa;
+  --ok: #4ade80;
+  --glow: 0 0 18px;
+
+  --bulma-primary-l: 70%;
+  --bulma-link-l: 72%;
+  --bulma-scheme-main: var(--surface);
+  --bulma-scheme-main-bis: var(--surface-2);
+  --bulma-background: var(--surface-2);
+}
+
+/* ===================== BASE ===================== */
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.title,
+.brand,
+.big-number {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
 
 /* RNF01: interface pensada primeiro para o celular */
 .container {
-  max-width: 720px;
+  max-width: 760px;
   padding: 1rem;
 }
 
@@ -21,6 +93,22 @@ label .select {
   font-weight: normal;
 }
 
+.input,
+.textarea,
+.select select {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: none;
+  color: var(--text);
+}
+
 .row {
   display: flex;
   gap: 0.5rem;
@@ -30,20 +118,271 @@ label .select {
 }
 
 .muted {
-  color: #7a7a7a;
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
-/* Destaca a pagina atual no menu (menos o nome do app) */
-.navbar-menu .router-link-active {
-  text-decoration: underline;
+.section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 1.5rem 0 0.6rem;
+}
+
+/* ===================== NAVBAR ===================== */
+.navbar.app-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar.app-nav .navbar-item,
+.navbar.app-nav .navbar-burger {
+  color: var(--text);
+}
+
+.navbar.app-nav .navbar-menu {
+  background: var(--surface);
+}
+
+.navbar-menu .router-link-active:not(.brand-link) {
+  color: var(--foco);
+  font-weight: 600;
 }
 
 .navbar-burger {
   color: inherit;
 }
 
-/* Linha de registro de serie: Serie | Carga | Reps | OK */
+/* ===================== CARDS NEON ===================== */
+.neon-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.neon-card.is-highlight {
+  border-color: var(--accent);
+  box-shadow: var(--glow) color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.neon-card .card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.neon-card .card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent, var(--text));
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.75rem;
+}
+
+/* barra de progresso (a "janela" embaixo do card) */
+.meter {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+}
+
+.meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.meter-track {
+  height: 8px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--accent);
+  box-shadow: var(--glow) color-mix(in srgb, var(--accent) 60%, transparent);
+  transition: width 0.4s ease;
+}
+
+.big-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ===================== OFENSIVA ===================== */
+.streak-hero {
+  --accent: var(--ofensiva);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.streak-flame {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ofensiva) 16%, transparent);
+  color: var(--ofensiva);
+}
+
+.streak-flame.is-off {
+  color: var(--muted);
+  background: var(--surface-2);
+}
+
+.calendar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, auto);
+  grid-auto-columns: max-content;
+  justify-content: start;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.calendar-day {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.calendar-day.trained { background: var(--treino); border-color: var(--treino); }
+.calendar-day.diet { background: var(--dieta); border-color: var(--dieta); }
+.calendar-day.both {
+  background: linear-gradient(135deg, var(--treino) 50%, var(--dieta) 50%);
+  border-color: transparent;
+}
+.calendar-day.today { outline: 2px solid var(--ofensiva); outline-offset: 1px; }
+.calendar-day.future { opacity: 0.25; }
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.legend span::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 6px;
+  background: var(--c);
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.badge-item {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0.8rem;
+  text-align: center;
+  background: var(--surface);
+}
+
+.badge-item .badge-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.4rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--foco) 16%, transparent);
+  color: var(--foco);
+}
+
+.badge-item.locked {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+/* ===================== LISTAS ===================== */
+.list-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  margin-bottom: 0.6rem;
+  color: var(--text);
+}
+
+a.list-card:hover {
+  border-color: var(--foco);
+}
+
+.meal-check {
+  --accent: var(--dieta);
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: transparent;
+  color: var(--surface);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.meal-check.done {
+  background: var(--accent);
+  box-shadow: var(--glow) color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.chip {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--accent, var(--foco)) 15%, transparent);
+  color: var(--accent, var(--foco));
+}
+
+.code-box {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--foco);
+}
+
+/* ===================== TREINO (registro das series) ===================== */
 .set-row {
   display: grid;
   grid-template-columns: 40px 1fr 1fr 64px;
@@ -58,20 +397,146 @@ label .select {
 }
 
 .set-row.saved .input {
-  border-color: #48c78e;
+  border-color: var(--ok);
+}
+
+/* Bulma: abas e notificacoes seguindo o tema */
+.tabs a {
+  color: var(--muted);
+  border-bottom-color: var(--border);
+}
+
+.tabs li.is-active a {
+  color: var(--foco);
+  border-bottom-color: var(--foco);
+}
+
+.tabs ul {
+  border-bottom-color: var(--border);
 }
 
 /* Celular pequeno: diminui as colunas fixas da serie */
+@media (max-width: 480px) {
+  .tabs a {
+    padding: 0.5em 0.55em;
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 400px) {
   .set-row {
     grid-template-columns: 28px 1fr 1fr 48px;
     gap: 0.35rem;
   }
+
+  .calendar-day {
+    width: 15px;
+    height: 15px;
+  }
 }
 
-/* Telas maiores: um pouco mais de respiro */
+/* Telas maiores: um pouco mais de respiro e mais largura */
 @media (min-width: 769px) {
   .container {
+    max-width: 920px;
     padding: 2rem 1rem;
   }
+
+  .calendar-day {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* ===================== LOGIN / CADASTRO ===================== */
+.auth-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2.5rem 0 1.5rem;
+  text-align: center;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+/* botoes "claros" do Bulma seguindo o tema */
+.button.is-light {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.button.is-light:hover {
+  border-color: var(--foco);
+}
+
+.button.is-danger.is-light {
+  color: #e11d48;
+}
+
+/* ===================== MEDALHAS ===================== */
+.medal-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.medal {
+  --tier: #cd7f32;
+  text-align: center;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.medal.prata { --tier: #b8c2cf; }
+.medal.ouro { --tier: #f5c542; }
+
+.medal-coin {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #1a1206;
+  background: radial-gradient(circle at 35% 30%, #fff8 0 18%, transparent 19%), var(--tier);
+  border: 3px solid color-mix(in srgb, var(--tier) 60%, #000);
+  box-shadow: var(--glow) color-mix(in srgb, var(--tier) 60%, transparent);
+}
+
+.medal .meter-track {
+  width: 100%;
+  height: 6px;
+}
+
+.medal.locked .medal-coin {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.navbar.app-nav .theme-toggle,
+.navbar.app-nav .theme-toggle:hover,
+.navbar.app-nav .theme-toggle:focus {
+  background: transparent;
+  color: var(--text);
+}
+
+/* etiquetas do Bulma seguindo a paleta */
+.tag.is-light {
+  background: color-mix(in srgb, var(--foco) 15%, transparent);
+  color: var(--foco);
 }

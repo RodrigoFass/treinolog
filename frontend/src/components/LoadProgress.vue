@@ -4,6 +4,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import http, { errorMessage } from '../api/http'
 import { formatDate } from '../utils/format'
+import { cssColor } from '../utils/theme'
 
 Chart.register(...registerables)
 
@@ -47,6 +48,10 @@ watch(exerciseId, async (id) => {
 
 function draw() {
   if (chart) chart.destroy()
+  if (!canvas.value) return
+  const accent = cssColor('--treino')
+  const muted = cssColor('--muted')
+  const grid = cssColor('--border')
   chart = new Chart(canvas.value, {
     type: 'line',
     data: {
@@ -55,8 +60,8 @@ function draw() {
         {
           label: 'Carga máxima (kg)',
           data: points.value.map((p) => p.max_load_kg),
-          borderColor: '#00d1b2',
-          backgroundColor: '#00d1b2',
+          borderColor: accent,
+          backgroundColor: accent,
           tension: 0.2,
         },
       ],
@@ -64,12 +69,24 @@ function draw() {
     options: {
       responsive: true,
       plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: false, title: { display: true, text: 'kg' } } },
+      scales: {
+        x: { ticks: { color: muted }, grid: { color: grid } },
+        y: {
+          beginAtZero: false,
+          ticks: { color: muted },
+          grid: { color: grid },
+          title: { display: true, text: 'kg', color: muted },
+        },
+      },
     },
   })
 }
 
-onBeforeUnmount(() => chart?.destroy())
+onMounted(() => window.addEventListener('treinolog-theme', draw))
+onBeforeUnmount(() => {
+  window.removeEventListener('treinolog-theme', draw)
+  chart?.destroy()
+})
 </script>
 
 <template>

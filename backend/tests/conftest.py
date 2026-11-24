@@ -38,6 +38,11 @@ def other_personal(client):
 
 
 @pytest.fixture
+def nutri(client):
+    return _register_and_login(client, "Nina Nutri", "nina@teste.com", "nutricionista")
+
+
+@pytest.fixture
 def student(client, personal):
     """Aluno ja vinculado ao personal pelo codigo de convite."""
     aluno = _register_and_login(client, "Ana Aluna", "ana@teste.com", "aluno")

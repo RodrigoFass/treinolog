@@ -30,6 +30,8 @@ def me():
     data = current_user.to_dict()
     if current_user.personal:
         data["personal_name"] = current_user.personal.name
+    if current_user.nutritionist:
+        data["nutritionist_name"] = current_user.nutritionist.name
     return data
 
 
@@ -37,8 +39,8 @@ def me():
 @role_required("aluno")
 def link():
     data = validate_json(LinkSchema)
-    personal = services.link_student(current_user, data["invite_code"])
-    return {"personal_id": personal.id, "personal_name": personal.name}
+    profissional = services.link_student(current_user, data["invite_code"])
+    return {"id": profissional.id, "name": profissional.name, "role": profissional.role}
 
 
 @bp.get("/students")

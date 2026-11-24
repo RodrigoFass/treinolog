@@ -19,6 +19,33 @@ const routes = [
   },
   { path: '/historico', component: () => import('../views/HistoryView.vue') },
   { path: '/evolucao', component: () => import('../views/ProgressView.vue') },
+  {
+    path: '/alimentacao',
+    component: () => import('../views/NutritionView.vue'),
+    meta: { role: 'aluno' },
+  },
+  {
+    path: '/conquistas',
+    component: () => import('../views/AchievementsView.vue'),
+    meta: { role: 'aluno' },
+  },
+
+  // Nutricionista
+  {
+    path: '/pacientes/:id',
+    component: () => import('../views/PatientView.vue'),
+    meta: { role: 'nutricionista' },
+  },
+  {
+    path: '/planos/novo',
+    component: () => import('../views/MealPlanEditorView.vue'),
+    meta: { role: 'nutricionista' },
+  },
+  {
+    path: '/planos/:id',
+    component: () => import('../views/MealPlanEditorView.vue'),
+    meta: { role: 'nutricionista' },
+  },
 
   // Personal
   {

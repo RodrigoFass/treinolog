@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', {
     isLogged: (state) => Boolean(state.token),
     isPersonal: (state) => state.user?.role === 'personal',
     isAluno: (state) => state.user?.role === 'aluno',
+    isNutri: (state) => state.user?.role === 'nutricionista',
   },
 
   actions: {

@@ -10,10 +10,11 @@ if TYPE_CHECKING:
     from treinolog.exercises.models import Exercise
     from treinolog.sessions.models import WorkoutSession
 
-ROLES = ("personal", "aluno")
+ROLES = ("personal", "aluno", "nutricionista")
+PROFISSIONAIS = ("personal", "nutricionista")
 
 
-# === User (personais e alunos) ===
+# === User (personais, nutricionistas e alunos) ===
 class User(db.Model):
     __tablename__ = "users"
 
@@ -33,11 +34,14 @@ class User(db.Model):
     )
 
     # ======================================================
-    # VINCULO ALUNO -> PERSONAL
+    # VINCULO ALUNO -> PERSONAL E ALUNO -> NUTRICIONISTA
     # ======================================================
     invite_code: Mapped[Optional[str]] = mapped_column(db.String(8), unique=True)
     personal_id: Mapped[Optional[int]] = mapped_column(
         db.Integer, db.ForeignKey("users.id", ondelete="SET NULL")
+    )
+    nutritionist_id: Mapped[Optional[int]] = mapped_column(
+        db.Integer, db.ForeignKey("users.id", ondelete="SET NULL", name="fk_users_nutritionist_id")
     )
 
     # ======================================================
@@ -54,11 +58,29 @@ class User(db.Model):
         "User",
         back_populates="students",
         remote_side=[id],
+        foreign_keys=[personal_id],
     )
 
     students: Mapped[List["User"]] = relationship(
         "User",
         back_populates="personal",
+        foreign_keys=[personal_id],
+    )
+
+    # ------------------------------------------------------
+    # NUTRICIONISTA / PACIENTES (auto-relacionamento)
+    # ------------------------------------------------------
+    nutritionist: Mapped[Optional["User"]] = relationship(
+        "User",
+        back_populates="patients",
+        remote_side=[id],
+        foreign_keys=[nutritionist_id],
+    )
+
+    patients: Mapped[List["User"]] = relationship(
+        "User",
+        back_populates="nutritionist",
+        foreign_keys=[nutritionist_id],
     )
 
     # ------------------------------------------------------
@@ -100,8 +122,9 @@ class User(db.Model):
             "email": self.email,
             "role": self.role,
             "personal_id": self.personal_id,
+            "nutritionist_id": self.nutritionist_id,
         }
-        if self.role == "personal":
+        if self.role in PROFISSIONAIS:
             data["invite_code"] = self.invite_code
         return data
 
