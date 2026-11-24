@@ -7,6 +7,21 @@ from treinolog.ext.db import db
 from treinolog.nutrition.models import Meal, MealLog, MealPlan
 from treinolog.sessions.models import SetLog, WorkoutSession
 
+# Meta de treinos por semana (domingo a sabado) para a semana contar como "sem falha"
+WEEKLY_GOAL = 3
+
+# Medalhas de tempo sem falha: (trilha, nivel, alvo)
+#   treino: semanas seguidas batendo a meta de treinos
+#   dieta: dias seguidos cumprindo todas as refeicoes do plano
+MEDALS = [
+    ("treino", "bronze", 1, "1 semana de treino sem falha"),
+    ("treino", "prata", 4, "1 mês de treino sem falha"),
+    ("treino", "ouro", 12, "3 meses de treino sem falha"),
+    ("dieta", "bronze", 7, "7 dias de dieta sem falha"),
+    ("dieta", "prata", 30, "30 dias de dieta sem falha"),
+    ("dieta", "ouro", 90, "90 dias de dieta sem falha"),
+]
+
 # Conquistas: (id, titulo, descricao, funcao que diz se desbloqueou)
 BADGES = [
     ("primeiro-treino", "Primeiro treino", "Registrou o primeiro treino",
@@ -17,7 +32,7 @@ BADGES = [
      lambda s: s["best"] >= 3),
     ("ofensiva-7", "Semana completa", "7 dias seguidos ativos",
      lambda s: s["best"] >= 7),
-    ("ofensiva-30", "Mes de ferro", "30 dias seguidos ativos",
+    ("ofensiva-30", "Mês de ferro", "30 dias seguidos ativos",
      lambda s: s["best"] >= 30),
     ("dieta-7", "Dieta em dia", "Cumpriu o plano alimentar em 7 dias",
      lambda s: s["diet_days"] >= 7),
@@ -90,6 +105,55 @@ def _streaks(active: set[date], today: date) -> tuple[int, int]:
     return current, best
 
 
+def _week_start(day: date) -> date:
+    """Domingo da semana do dia."""
+    return day - timedelta(days=(day.weekday() + 1) % 7)
+
+
+def _training_weeks(trained: set[date], today: date) -> tuple[int, int]:
+    """Semanas seguidas batendo a meta de treinos: atual e recorde.
+    A semana de hoje ainda esta em andamento: so conta se ja bateu a meta, e nao quebra."""
+    per_week: dict[date, int] = {}
+    for day in trained:
+        week = _week_start(day)
+        per_week[week] = per_week.get(week, 0) + 1
+    good = {week for week, count in per_week.items() if count >= WEEKLY_GOAL}
+
+    current = 0
+    week = _week_start(today)
+    if week not in good:
+        week -= timedelta(days=7)
+    while week in good:
+        current += 1
+        week -= timedelta(days=7)
+
+    best = run = 0
+    previous = None
+    for week in sorted(good):
+        run = run + 1 if previous and week - previous == timedelta(days=7) else 1
+        best = max(best, run)
+        previous = week
+    return current, best
+
+
+def _medals(training: tuple[int, int], diet: tuple[int, int]) -> list[dict]:
+    values = {"treino": training, "dieta": diet}
+    result = []
+    for track, tier, target, title in MEDALS:
+        current, best = values[track]
+        result.append({
+            "id": f"{track}-{tier}",
+            "track": track,
+            "tier": tier,
+            "title": title,
+            "target": target,
+            "unit": "semanas" if track == "treino" else "dias",
+            "progress": min(current, target),
+            "unlocked": best >= target,
+        })
+    return result
+
+
 # ==========================================================
 # RF15: ofensiva, calendario de dias ativos e conquistas
 # ==========================================================
@@ -100,6 +164,8 @@ def summary(user: User, student_id: int | None, weeks: int = 12) -> dict:
     diet = _diet_days(student)
     active = trained | diet
     current, best = _streaks(active, today)
+    training = _training_weeks(trained, today)
+    diet_run = _streaks(diet, today)
 
     # Calendario: semanas completas (domingo a sabado), terminando na semana de hoje
     end = today + timedelta(days=(5 - today.weekday()) % 7)  # proximo sabado (ou hoje)
@@ -129,6 +195,11 @@ def summary(user: User, student_id: int | None, weeks: int = 12) -> dict:
         "best_streak": best,
         "active_today": today in active,
         "active_days": len(active),
+        "weekly_goal": WEEKLY_GOAL,
+        "trained_this_week": sum(1 for d in trained if _week_start(d) == _week_start(today)),
+        "training_weeks": {"current": training[0], "best": training[1]},
+        "diet_streak": {"current": diet_run[0], "best": diet_run[1]},
+        "medals": _medals(training, diet_run),
         "calendar": calendar,
         "badges": [
             {"id": badge_id, "title": title, "description": text, "unlocked": rule(stats)}

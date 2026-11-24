@@ -116,3 +116,58 @@ def test_personal_ve_a_ofensiva_do_aluno_mas_nao_de_aluno_alheio(
     url = f"/api/achievements?student_id={student['user']['id']}"
     assert client.get(url, headers=personal["headers"]).status_code == 200
     assert client.get(url, headers=other_personal["headers"]).status_code == 404
+
+
+# Medalhas de tempo sem falha
+def test_semanas_seguidas_batendo_a_meta_de_treinos():
+    from treinolog.achievements.services import WEEKLY_GOAL, _training_weeks
+
+    hoje = date(2026, 11, 25)  # quarta-feira
+    domingo = date(2026, 11, 22)
+    dias = set()
+    for semana in (1, 2, 3):  # tres semanas completas antes desta
+        inicio = domingo - timedelta(days=7 * semana)
+        dias |= {inicio + timedelta(days=d) for d in range(WEEKLY_GOAL)}
+    assert _training_weeks(dias, hoje) == (3, 3)
+
+    # uma semana sem bater a meta quebra a sequencia, mas o recorde fica
+    sem_falha_recente = {d for d in dias if d >= domingo - timedelta(days=7)}
+    antigas = {d - timedelta(days=21) for d in dias}
+    assert _training_weeks(sem_falha_recente | antigas, hoje) == (1, 3)
+
+
+def test_medalha_de_dieta_sem_falha(client, nutri, student):
+    from treinolog.ext.db import db
+    from treinolog.nutrition.models import MealLog
+
+    client.post(
+        "/api/auth/link",
+        json={"invite_code": nutri["user"]["invite_code"]},
+        headers=student["headers"],
+    )
+    plano = client.post(
+        "/api/nutrition/plans",
+        json={
+            "student_id": student["user"]["id"],
+            "name": "Plano",
+            "meals": [{"name": "Almoco", "foods": "Arroz e feijao"}],
+        },
+        headers=nutri["headers"],
+    ).json
+    for dias_atras in range(1, 8):
+        db.session.add(
+            MealLog(
+                student_id=student["user"]["id"],
+                meal_id=plano["meals"][0]["id"],
+                day=date.today() - timedelta(days=dias_atras),
+            )
+        )
+    db.session.commit()
+
+    resumo = client.get("/api/achievements", headers=student["headers"]).json
+    assert resumo["diet_streak"] == {"current": 7, "best": 7}
+    medalhas = {m["id"]: m for m in resumo["medals"]}
+    assert medalhas["dieta-bronze"]["unlocked"] is True
+    assert medalhas["dieta-prata"]["unlocked"] is False
+    assert medalhas["dieta-prata"]["progress"] == 7
+    assert medalhas["treino-bronze"]["unlocked"] is False
