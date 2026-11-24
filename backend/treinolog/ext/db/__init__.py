@@ -21,6 +21,7 @@ def register_models():
     import treinolog.exercises.models  # noqa: F401
     import treinolog.workouts.models  # noqa: F401
     import treinolog.sessions.models  # noqa: F401
+    import treinolog.nutrition.models  # noqa: F401
 
 
 @event.listens_for(Engine, "connect")

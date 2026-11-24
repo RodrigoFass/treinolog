@@ -11,7 +11,7 @@ class RegisterSchema(BaseModel):
     name: str = Field(min_length=1, max_length=120)
     email: str = Field(min_length=3, max_length=160, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
     password: str = Field(min_length=6, max_length=128)
-    role: Literal["personal", "aluno"]
+    role: Literal["personal", "aluno", "nutricionista"]
 
 
 class LoginSchema(BaseModel):

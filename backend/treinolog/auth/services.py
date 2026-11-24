@@ -5,7 +5,7 @@ import string
 
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 
-from treinolog.auth.models import ROLES, User
+from treinolog.auth.models import PROFISSIONAIS, ROLES, User
 from treinolog.ext.db import db
 from treinolog.sessions.models import WorkoutSession
 
@@ -32,13 +32,13 @@ def register_user(name: str, email: str, password: str, role: str) -> User:
     if len(password) < 6:
         raise BadRequest("A senha deve ter pelo menos 6 caracteres")
     if role not in ROLES:
-        raise BadRequest("Perfil deve ser 'personal' ou 'aluno'")
+        raise BadRequest("Perfil deve ser 'personal', 'nutricionista' ou 'aluno'")
     if db.session.scalar(db.select(User).filter_by(email=email)):
         raise Conflict("E-mail ja cadastrado")
 
     user = User(name=name, email=email, role=role)
     user.set_password(password)
-    if role == "personal":
+    if role in PROFISSIONAIS:
         user.invite_code = _new_invite_code()
 
     db.session.add(user)
@@ -57,19 +57,28 @@ def authenticate(email: str, password: str) -> User:
 
 
 # ==========================================================
-# RF02: vinculo do aluno ao personal por codigo de convite
+# RF02 / RF10: vinculo do aluno ao personal ou ao nutricionista
+# pelo codigo de convite (o codigo diz quem e o profissional)
 # ==========================================================
 def link_student(student: User, invite_code: str) -> User:
-    personal = db.session.scalar(
-        db.select(User).filter_by(invite_code=invite_code.strip().upper(), role="personal")
+    profissional = db.session.scalar(
+        db.select(User).where(
+            User.invite_code == invite_code.strip().upper(),
+            User.role.in_(PROFISSIONAIS),
+        )
     )
-    if personal is None:
+    if profissional is None:
         raise NotFound("Codigo de convite nao encontrado")
 
-    student.personal_id = personal.id
+    if profissional.role == "personal":
+        student.personal_id = profissional.id
+    else:
+        student.nutritionist_id = profissional.id
     db.session.commit()
-    logger.info("Aluno id=%s vinculado ao personal id=%s", student.id, personal.id)
-    return personal
+    logger.info(
+        "Aluno id=%s vinculado ao %s id=%s", student.id, profissional.role, profissional.id
+    )
+    return profissional
 
 
 # ==========================================================

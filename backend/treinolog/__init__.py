@@ -30,12 +30,14 @@ def create_app(config_name=None):
     # ----------------------------------------------------------
     # Blueprints (importados aqui dentro para evitar import circular)
     # ----------------------------------------------------------
-    from . import auth, exercises, sessions, workouts
+    from . import achievements, auth, exercises, nutrition, sessions, workouts
 
     auth.init_app(app)
     exercises.init_app(app)
     workouts.init_app(app)
     sessions.init_app(app)
+    nutrition.init_app(app)
+    achievements.init_app(app)
 
     @app.get("/api/health")
     def health():
